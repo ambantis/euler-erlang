@@ -1,6 +1,10 @@
+# Emacs
+*~
+\#*\#
+.\#*
+
+# VIM
 *.sw?
+
+# Erlang
 *.beam
-
-*.iml
-.idea/
-
