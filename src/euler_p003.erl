@@ -13,14 +13,17 @@
 %%% Created : 16 May 2020 by Alexandros Bantis <ambantis@gmail.com>
 
 -module(euler_p003).
+
 -export([first_factor/1, is_prime/1, prime_factors/1, primes/1, max_prime_factor/1]).
 
 is_prime(N) when N < 2 ->
     false;
 is_prime(N) ->
     case first_factor(N) of
-        nil -> true;
-        X -> is_prime(N div X)
+      nil ->
+          true;
+      X ->
+          is_prime(N div X)
     end.
 
 limit(X) ->
@@ -29,12 +32,12 @@ limit(X) ->
 primes(Limit) when Limit < 2 ->
     [];
 primes(Limit) ->
-    primes([2], lists:seq(3,Limit,2)).
+    primes([2], lists:seq(3, Limit, 2)).
 
 primes(Primes, []) ->
     lists:reverse(Primes);
-primes([Prime|Primes], Integers) ->
-    [NextPrime | NextIntegers] = [X || X <- Integers, X rem Prime =/= 0 ],
+primes([Prime | Primes], Integers) ->
+    [NextPrime | NextIntegers] = [X || X <- Integers, X rem Prime =/= 0],
     primes([NextPrime, Prime | Primes], NextIntegers).
 
 first_factor(N) ->
@@ -54,14 +57,18 @@ prime_factors(N) ->
 
 prime_factors(Acc, N) ->
     case first_factor(N) of
-        nil -> [N | Acc];
-        X -> prime_factors([X|Acc], N div X)
+      nil ->
+          [N | Acc];
+      X ->
+          prime_factors([X | Acc], N div X)
     end.
 
 max_prime_factor(N) when N < 1 ->
     1;
 max_prime_factor(N) ->
     case first_factor(N) of
-        nil -> N;
-        X -> max_prime_factor(N div X)
+      nil ->
+          N;
+      X ->
+          max_prime_factor(N div X)
     end.
