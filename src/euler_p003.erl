@@ -13,12 +13,18 @@
 %%% Created : 16 May 2020 by Alexandros Bantis <ambantis@gmail.com>
 
 -module(euler_p003).
--export([is_prime/1, primes/1, max_prime/1, max_prime_factor/1]).
+-export([first_factor/1, is_prime/1, prime_factors/1, primes/1, max_prime_factor/1]).
 
-is_prime(X) when X < 2 ->
+is_prime(N) when N < 2 ->
     false;
-is_prime(X) ->
-    X =:= max_prime(X).
+is_prime(N) ->
+    case first_factor(N) of
+        nil -> true;
+        X -> is_prime(N div X)
+    end.
+
+limit(X) ->
+    trunc(math:sqrt(X)) + 1.
 
 primes(Limit) when Limit < 2 ->
     [];
@@ -31,30 +37,31 @@ primes([Prime|Primes], Integers) ->
     [NextPrime | NextIntegers] = [X || X <- Integers, X rem Prime =/= 0 ],
     primes([NextPrime, Prime | Primes], NextIntegers).
 
-max_prime(Limit) ->
-    max_prime(2, lists:seq(3,Limit,2)).
+first_factor(N) ->
+    first_factor(limit(N), 2, N).
 
-max_prime(Prime, []) ->
-    Prime;
-max_prime(Prime, Integers) ->
-    [NextPrime | NextIntegers] = [X || X <- Integers, X rem Prime =/= 0 ],
-    max_prime(NextPrime, NextIntegers).
+first_factor(Limit, X, _N) when X > Limit ->
+    nil;
+first_factor(_Limit, X, N) when N rem X =:= 0 ->
+    X;
+first_factor(Limit, X, N) ->
+    first_factor(Limit, X + 1, N).
 
-max_prime_factor(N) when N < 2 ->
+prime_factors(N) when N < 1 ->
+    1;
+prime_factors(N) ->
+    prime_factors([], N).
+
+prime_factors(Acc, N) ->
+    case first_factor(N) of
+        nil -> [N | Acc];
+        X -> prime_factors([X|Acc], N div X)
+    end.
+
+max_prime_factor(N) when N < 1 ->
     1;
 max_prime_factor(N) ->
-    Limit = trunc(math:sqrt(N)) + 1,
-    IsFactor = fun(X) -> N rem X =:= 0 end,
-    max_prime_if(Limit, IsFactor).
-
-max_prime_if(Limit, IsFactor) ->
-    max_prime_if(IsFactor, 1, 2, lists:seq(3, Limit, 2)).
-
-max_prime_if(_IsFactor, Acc, _Prime, []) ->
-    Acc;
-max_prime_if(IsFactor, Acc, Prime, Integers) ->
-    [NextPrime | NextIntegers] = [X || X <- Integers, X rem Prime =/= 0],
-    case IsFactor(NextPrime) of
-        true -> max_prime_if(IsFactor, NextPrime, NextPrime, NextIntegers);
-        false -> max_prime_if(IsFactor, Acc, NextPrime, NextIntegers)
+    case first_factor(N) of
+        nil -> N;
+        X -> max_prime_factor(N div X)
     end.
