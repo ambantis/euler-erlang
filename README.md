@@ -1,9 +1,9 @@
-euler_erlang
+Euler Erlang
 =====
 
-An OTP library
+Learning Erlang one problem at a time.
 
-Build
+Enjoy
 -----
 
-    $ rebar3 compile
+    $ rebar3 shell
